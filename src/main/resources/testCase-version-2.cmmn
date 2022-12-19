@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cmmn:definitions xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0dm6hna" targetNamespace="http://bpmn.io/schema/cmmn" exporter="Camunda Modeler" exporterVersion="5.6.0">
+  <cmmn:case id="Case_1">
+    <cmmn:casePlanModel id="CasePlanModel_1" name="A CasePlanModel">
+      <cmmn:planItem id="PlanItem_1" definitionRef="HumanTask_0gb4gs1" />
+      <cmmn:planItem id="PlanItem_2" definitionRef="HumanTask_1mymrpx">
+        <cmmn:entryCriterion id="EntryCriterion_0wa2ca0" sentryRef="Sentry_0m595h6" />
+      </cmmn:planItem>
+      <cmmn:sentry id="Sentry_0m595h6">
+        <cmmn:ifPart id="IfPart_1s1y6li">
+          <cmmn:condition id="Expression_0c5d21w">${readyToGo == true}</cmmn:condition>
+        </cmmn:ifPart>
+      </cmmn:sentry>
+      <cmmn:humanTask id="HumanTask_0gb4gs1" name="first task" />
+      <cmmn:humanTask id="HumanTask_1mymrpx" name="second task" />
+    </cmmn:casePlanModel>
+  </cmmn:case>
+  <cmmndi:CMMNDI>
+    <cmmndi:CMMNDiagram id="CMMNDiagram_1" name="test case">
+      <cmmndi:Size width="500" height="500" />
+      <cmmndi:CMMNShape id="DI_CasePlanModel_0q997oi" cmmnElementRef="CasePlanModel_1">
+        <dc:Bounds x="154" y="99" width="363" height="169" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="PlanItem_16faxoc_di" cmmnElementRef="PlanItem_1">
+        <dc:Bounds x="190" y="132" width="100" height="80" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="PlanItem_1xsrx6m_di" cmmnElementRef="PlanItem_2">
+        <dc:Bounds x="365" y="132" width="100" height="80" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="EntryCriterion_0wa2ca0_di" cmmnElementRef="EntryCriterion_0wa2ca0">
+        <dc:Bounds x="355" y="154" width="20" height="28" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+    </cmmndi:CMMNDiagram>
+  </cmmndi:CMMNDI>
+</cmmn:definitions>
