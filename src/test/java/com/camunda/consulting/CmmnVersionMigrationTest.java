@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.runtime.CaseExecution;
@@ -20,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 @ExtendWith(ProcessEngineExtension.class)
 public class CmmnVersionMigrationTest {
@@ -41,7 +42,7 @@ public class CmmnVersionMigrationTest {
     LOG.info("Test Version 2:");
     repositoryService().createDeployment().addClasspathResource("testCase-version-2.cmmn").deploy();
     
-    CaseInstance caseInstance = caseService().createCaseInstanceByKey("Case_1", Map.of("readyToGo", false));
+    CaseInstance caseInstance = caseService().createCaseInstanceByKey("Case_1", ImmutableMap.of("readyToGo", false));
     
     List<Task> tasks = taskService().createTaskQuery().caseInstanceId(caseInstance.getId()).list();
     assertThat(tasks).hasSize(1);
@@ -55,7 +56,7 @@ public class CmmnVersionMigrationTest {
     
     assertThat(tasks).hasSize(2);
   }
-  
+
   @Test
   public void testMigration() {
     LOG.info("Test migration:");
@@ -76,7 +77,7 @@ public class CmmnVersionMigrationTest {
     displayCaseDefs();
     
     CaseInstance caseInstance2 = caseService()
-        .createCaseInstanceByKey("Case_1", Map.of(
+        .createCaseInstanceByKey("Case_1", ImmutableMap.of(
             "customerName", "number2", 
             "readyToGo", false));
     assertThat(caseInstance2).isActive();
@@ -88,7 +89,15 @@ public class CmmnVersionMigrationTest {
     displayTasks();
     updateCaseDefInCaseExecution(caseInstance.getId(), caseInstance2.getCaseDefinitionId());
     displayCaseExecutions();
-    
+
+    // insert into act_ru_case_execution values ('100', 1, '4', null, null, null, '4', 'Case_1:2:9', 'PlanItem_2', 0, 1, false, null);
+    updateDatabaseContent(String.format("insert into act_ru_case_execution values ('100', 1, '%s', null, null, null, '%s', '%s', 'PlanItem_2', 0, 1, false, null)",
+        caseInstance.getId(), caseInstance.getId(), caseInstance2.getCaseDefinitionId()));
+
+    // insert into act_ru_case_sentry_part values ('101',1,'4','4','Sentry_0m595h6','ifPart',null,null,null,null,null,false,null);
+    updateDatabaseContent(String.format("insert into act_ru_case_sentry_part values ('101',1,'%s','%s','Sentry_0m595h6','ifPart',null,null,null,null,null,false,null)",
+        caseInstance.getId(), caseInstance.getId()));
+
     caseInstance = caseService().createCaseInstanceQuery().caseInstanceId(caseInstance.getId()).singleResult();
     assertThat(caseInstance.getCaseDefinitionId()).isEqualTo(caseInstance2.getCaseDefinitionId());
     
